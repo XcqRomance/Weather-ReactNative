@@ -11,6 +11,8 @@ import {
 	ImageBackground,
 	TouchableHighlight,
 	ListView,
+	RefreshControl,
+	ActivityIndicator
 } from 'react-native';
 
 var screenWidth = Dimensions.get('window').width;
@@ -27,6 +29,7 @@ export default class Home extends Component < {} > {
 		this.state = {
 			isLoading: true,
 			quiltyColor: true,
+			refreshing: false,
 			dataSource: ds,
 			suggegstions: {}, // 代表一个空json,生活建议
 			aqi: {}, // aqi
@@ -36,15 +39,18 @@ export default class Home extends Component < {} > {
 	render() {
 		if (this.state.isLoading) {
 			return (
-				<View>
-					<Text>正在加载数据。。。</Text>
+				<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+					<ActivityIndicator/>
 				</View>
 			)
 		}
 		return (
 			<View style={{flex: 1}}>
 				<ImageBackground source={{uri: 'http://cn.bing.com/az/hprichbg/rb/BarHarborCave_ROW9345444229_1920x1080.jpg'}}  style={{width: screenWidth, height: screenHeight}}>
-					<ScrollView style = {{flex: 1}}>
+					<ScrollView style = {{flex: 1}} 
+						refreshControl={
+							<RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)}/>
+						}>
 						{/*渲染头部信息*/}
 						{this.reanderHeader()}
 						{/*渲染天气预报列表*/}
@@ -53,16 +59,23 @@ export default class Home extends Component < {} > {
 						{this.renderAirquilty()}
 						{/*渲染生活指数*/}
 						{this.renderSuggestion()}
-						<View></View>
 					</ScrollView> 
 				</ImageBackground>
 			</View>
 		);
 	}
 
+  _onRefresh() {
+    this.setupData();
+  }
+
 	componentDidMount() {
 		console.log(screenWidth)
 		console.log(screenHeight)
+		this.setupData();
+	}
+
+	setupData() {
 		fetch('http://guolin.tech/api/weather?cityid=CN101050101&key=41dd96cb90344217acbf5fe0813f16cd')
 			.then((response) => response.json())
 			.then((responseJson) => {
@@ -73,6 +86,7 @@ export default class Home extends Component < {} > {
 				// console.log(JSON.parse(responseJson));
 				// alert(responseJson.toString());
 				this.setState({
+					refreshing: false,
 					isLoading: false,
 					dataSource: this.state.dataSource.cloneWithRows(responseJson.HeWeather[0].daily_forecast),
 					suggegstions: responseJson.HeWeather[0].suggestion,
