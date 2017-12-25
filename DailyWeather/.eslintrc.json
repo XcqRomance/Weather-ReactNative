@@ -26,6 +26,6 @@
         "no-use-before-define": 0,
         "react/jsx-uses-react": "error",
         "react/jsx-uses-vars": "error",
-        // "no-console": 0
+        "no-console": 0 // 检测console()不报错
   }
 }

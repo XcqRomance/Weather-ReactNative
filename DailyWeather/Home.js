@@ -26,8 +26,10 @@ export default class Home extends Component < {} > {
 		});
 		this.state = {
 			isLoading: true,
+			quiltyColor: true,
 			dataSource: ds,
-			suggegstions: {}, // 代表一个空json
+			suggegstions: {}, // 代表一个空json,生活建议
+			aqi: {}, // aqi
 		};
 	}
 
@@ -74,6 +76,7 @@ export default class Home extends Component < {} > {
 					isLoading: false,
 					dataSource: this.state.dataSource.cloneWithRows(responseJson.HeWeather[0].daily_forecast),
 					suggegstions: responseJson.HeWeather[0].suggestion,
+					aqi: responseJson.HeWeather[0].aqi,
 				})
 			})
 			.catch((error) => {
@@ -109,13 +112,38 @@ export default class Home extends Component < {} > {
 			</View>
 		);
 }
-
+// ,marginBottom: 20,marginTop: 20,marginLeft: 20  ,marginBottom: 20,marginTop: 20
 renderAirquilty() {
+	let {
+		aqi
+	} = this.state;
 	return (
 		<View>
 				<View style={styles.suggestion}>
-					<Text style={{color: 'white',fontSize: 20,marginBottom: 20,marginTop: 20,marginLeft: 20}}>空气质量</Text>
-					<View></View>
+					<View style={{flexDirection: 'row',justifyContent: 'flex-start', alignItems: 'center',padding: 20}}>
+						<Text style={{color: 'white',fontSize: 20}}>空气质量：</Text>
+						<Text style={{color: 'red',fontSize: 17}}>{aqi.city.qlty}</Text>
+					</View>
+					<View style={{flex: 1,flexDirection: 'row'}}>
+						<View style={{flex: 1, alignItems: 'center' }}>
+							<Text style={styles.airQuiltyDes}>AQI指数</Text>
+							<Text style={styles.airQuiltyValue}>{aqi.city.aqi}</Text>
+						</View>
+						<View style={{flex: 1, alignItems: 'center' }}>
+							<Text style={styles.airQuiltyDes}>PM2.5</Text>
+							<Text style={styles.airQuiltyValue}>{aqi.city.pm25}</Text>
+						</View>
+					</View>
+					<View style={{flex: 1,flexDirection: 'row'}}>
+						<View style={{flex: 1,alignItems: 'center' }}>
+							<Text style={styles.airQuiltyDes}>PM10</Text>
+							<Text style={styles.airQuiltyValue}>{aqi.city.pm10}</Text>
+						</View>
+						<View style={{flex: 1, alignItems: 'center' }}>
+							<Text style={styles.airQuiltyDes}>O3指数</Text>
+							<Text style={styles.airQuiltyValue}>{aqi.city.o3}</Text>
+						</View>
+					</View>
 				</View>
 			</View>
 	)
@@ -182,17 +210,6 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff0',
 		margin: 20,
 	},
-
-	welcome: {
-		fontSize: 20,
-		textAlign: 'center',
-		margin: 10,
-	},
-	instructions: {
-		textAlign: 'center',
-		color: '#333333',
-		marginBottom: 5,
-	},
 	item: {
 		padding: 10,
 		fontSize: 18,
@@ -208,5 +225,18 @@ const styles = StyleSheet.create({
 		marginBottom: 18,
 		marginLeft: 20,
 		marginRight: 20
+	},
+	airQuiltyDes: {
+		fontSize: 16,
+		textAlign: 'center',
+		color: 'white',
+		marginTop: 10,
+		marginBottom: 10
+	},
+	airQuiltyValue: {
+		fontSize: 20,
+		textAlign: 'center',
+		color: 'white',
+		marginBottom: 10
 	}
 });
