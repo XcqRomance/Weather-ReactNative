@@ -1,6 +1,4 @@
-import React, {
-	Component
-} from 'react';
+import React, { Component } from 'react';
 import {
 	Platform,
 	StyleSheet,
@@ -18,7 +16,7 @@ import {
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
-export default class Home extends Component <{}> {
+export default class Home extends Component < {} > {
 
 	constructor(props) {
 		super(props);
@@ -53,11 +51,10 @@ export default class Home extends Component <{}> {
 						{this.renderAirquilty()}
 						{/*渲染生活指数*/}
 						{this.renderSuggestion()}
-						
+						<View></View>
 					</ScrollView> 
 				</ImageBackground>
 			</View>
-
 		);
 	}
 
@@ -65,23 +62,23 @@ export default class Home extends Component <{}> {
 		console.log(screenWidth)
 		console.log(screenHeight)
 		fetch('http://guolin.tech/api/weather?cityid=CN101050101&key=41dd96cb90344217acbf5fe0813f16cd')
-		.then((response) => response.json())
-		.then((responseJson) => {
-			console.log('success1', responseJson);
-			console.log('success2', responseJson.HeWeather[0].daily_forecast);
-			console.log('success3',responseJson.HeWeather[0].suggestion);
-			console.log('success3',responseJson.HeWeather[0].suggestion['air']);
-			// console.log(JSON.parse(responseJson));
-			// alert(responseJson.toString());
-			this.setState({
-				isLoading: false,
-				dataSource: this.state.dataSource.cloneWithRows(responseJson.HeWeather[0].daily_forecast),
-				suggegstions: responseJson.HeWeather[0].suggestion,
+			.then((response) => response.json())
+			.then((responseJson) => {
+				console.log('success1', responseJson);
+				console.log('success2', responseJson.HeWeather[0].daily_forecast);
+				console.log('success3', responseJson.HeWeather[0].suggestion);
+				console.log('success3', responseJson.HeWeather[0].suggestion['air']);
+				// console.log(JSON.parse(responseJson));
+				// alert(responseJson.toString());
+				this.setState({
+					isLoading: false,
+					dataSource: this.state.dataSource.cloneWithRows(responseJson.HeWeather[0].daily_forecast),
+					suggegstions: responseJson.HeWeather[0].suggestion,
+				})
 			})
-		})
-     	.catch((error) => {
-       		console.error(error);
-      	});
+			.catch((error) => {
+				console.error(error);
+			});
 	}
 
 	reanderHeader() {
@@ -99,36 +96,37 @@ export default class Home extends Component <{}> {
 		return (
 			<View style={styles.forecast}>
 						<Text style={{color: 'white', fontSize: 20, marginBottom: 10}}>预报</Text>
-						<ListView
-					     dataSource={this.state.dataSource}
-					     renderRow={(rowData) => (
-							<View style={{flex: 1, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', height: 44}}>
-								<Text style={{color: 'white',flex: 1}}>{rowData.date}</Text>
-								<Text style={{color: 'white',flex: 1}}>{rowData.cond.txt_d}</Text>
-								<Text style={{color: 'white',flex: 1}}>{rowData.tmp.max}</Text>
-								<Text style={{color: 'white',flex: 1}}>{rowData.tmp.min}</Text>
-							</View>
-					     	)}
-					   />
-					</View>
+						<ListView 
+							dataSource={this.state.dataSource}
+							renderRow={(rowData) =>  (
+								<View style={styles.listView}>
+									<Text style={{color: 'white',flex: 1}}>{rowData.date}</Text>
+									<Text style={{color: 'white',flex: 1}}>{rowData.cond.txt_d}</Text>
+									<Text style={{color: 'white',flex: 1}}>{rowData.tmp.max}</Text>
+									<Text style={{color: 'white',flex: 1}}>{rowData.tmp.min}</Text>
+								</View>
+							)}/> 
+			</View>
 		);
-	}
+}
 
-	renderAirquilty() {
-		return (
-			<View>
+renderAirquilty() {
+	return (
+		<View>
 				<View style={styles.suggestion}>
 					<Text style={{color: 'white',fontSize: 20,marginBottom: 20,marginTop: 20,marginLeft: 20}}>空气质量</Text>
 					<View></View>
 				</View>
 			</View>
-			)
-	}
+	)
+}
 
-	renderSuggestion() {
-		let {suggegstions} = this.state;
-		return (
-			<View style={styles.suggestion}>
+renderSuggestion() {
+	let {
+		suggegstions
+	} = this.state;
+	return (
+		<View style={styles.suggestion}>
 				<Text style={{color: 'white',fontSize: 20,marginBottom: 20,marginTop: 20,marginLeft: 20}}>生活建议</Text>
 
 				<Text style={styles.suggestionDes}>空气质量：{suggegstions.air.txt}</Text>
@@ -140,8 +138,8 @@ export default class Home extends Component <{}> {
 				<Text style={styles.suggestionDes}>旅游：{suggegstions.trav.txt}</Text>
 				<Text style={styles.suggestionDes}>紫外线：{suggegstions.uv.txt}</Text>
 			</View>
-		);
-	}
+	);
+}
 
 }
 
@@ -151,6 +149,13 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		backgroundColor: '#F5FCFF',
+	},
+	listView: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+		height: 44
 	},
 	header: {
 		flex: 1,
@@ -204,6 +209,4 @@ const styles = StyleSheet.create({
 		marginLeft: 20,
 		marginRight: 20
 	}
-
-
 });

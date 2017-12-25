@@ -19,6 +19,11 @@ export default class ListViewComponent extends Component < {} > {
 			dataSource: ds.cloneWithRows(['row 1', 'row 2', 'row 1', 'row 2', 'row 1', 'row 2']),
 		};
 	}
+
+	hell0() {
+		<View>hello</View>
+	};
+
 	render() {
 		return (
 			<View>
