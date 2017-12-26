@@ -12,7 +12,8 @@ import {
   TouchableHighlight,
   ListView,
   RefreshControl,
-  ActivityIndicator
+  ActivityIndicator,
+  Button
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
@@ -20,7 +21,11 @@ import { StackNavigator } from 'react-navigation';
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
-export default class App extends Component < {} > {
+class HomeScreen extends Component < {} > {
+
+  // static navigationOptions = {
+
+  // }
 
   constructor(props) {
     super(props);
@@ -53,6 +58,7 @@ export default class App extends Component < {} > {
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)}/>
             }>
+            
             {/*渲染头部信息*/}
             {this.reanderHeader()}
             {/*渲染天气预报列表*/}
@@ -106,7 +112,10 @@ export default class App extends Component < {} > {
             <Text style={styles.headerTitle}>哈尔滨</Text>
             <Text style={styles.headerDes}>晴</Text>
             <Text style={styles.headerTepe}>8℃</Text>
-            
+            <Button style={{color: 'red'}}
+              title="选择城市"
+              onPress={() => this.props.navigation.navigate('City')}
+              />
       </View>
     );
   }
@@ -187,6 +196,25 @@ renderSuggestion() {
 
 }
 
+class CityScreen extends React.Component {
+  static navigationOptions = ({navigation}) => ({
+    headerMode: 'float',
+    gesturesEnabled: false,
+    headerTitle: '北京',
+    headerRight: <Button title="back" onPress={() => navigation.goBack(null)}/> ,
+  });
+
+    render() {
+      return (
+        <View>
+          <Text>sdfsdfsdfsdfasdfasdfasfasfasas</Text>
+          <Button title="back" onPress={() => this.props.navigation.goBack(null)}/>
+        </View>
+        )
+    }
+  }
+
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -256,3 +284,30 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
+
+const StackCity = StackNavigator({
+  City: {
+      screen: CityScreen,
+    }
+});
+
+
+const StackApp = StackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+    },
+    City: {
+      screen: StackCity,
+    }
+  },
+  {
+    headerMode: 'none',
+  },
+  );
+
+export default class App extends React.Component {
+  render() {
+    return <StackApp />
+  }
+}
