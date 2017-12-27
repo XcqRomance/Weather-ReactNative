@@ -281,7 +281,6 @@ class CityScreen extends React.Component {
         provinces: responseJson,
         currentLevel: level,
       })
-      // console.log(this.state.currentLevel)
     })
     .catch((error) => {
         console.error(error);
@@ -298,15 +297,13 @@ class CityScreen extends React.Component {
         </View>)
       } 
       return (
-        <View style={{backgroundColor: 'white'}}>
-          <FlatList
+          <FlatList style={{backgroundColor: 'white'}}
             data={this.state.provinces}
             renderItem={({item}) => { 
               return (
-                <Button 
-                  title={`${item.name}`}
-                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center', color: 'gray'}} 
-                  onPress={() => {
+                <TouchableOpacity 
+                    style={{justifyContent: 'center', alignItems: 'center',height: 44}}
+                    onPress={() => {
                       setParams({name: item.name})
                       let level = this.state.currentLevel
                       if (this.state.currentLevel === 0) {
@@ -326,9 +323,9 @@ class CityScreen extends React.Component {
                         this.state.loading = true 
                         this.setupData(this.state.currentLevel)
                       }
-                    }
-                  }>
-                </Button>
+                    }}>
+                    <Text style={{ color: 'gray', fontSize: 20}} >{item.name} </Text>   
+                </TouchableOpacity>
                
               )} }
             ItemSeparatorComponent={ () => { return (
@@ -338,7 +335,6 @@ class CityScreen extends React.Component {
               (item, index) => item.id
             }
           />
-        </View>
         )
     }
 
