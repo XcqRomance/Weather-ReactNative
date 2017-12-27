@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   Button,
   VirtualizedList,
+  TouchableOpacity
 } from 'react-native';
 import { StackNavigator, NavigationActions } from 'react-navigation';
 
@@ -22,11 +23,6 @@ var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 class HomeScreen extends Component < {} > {
-
-  // static navigationOptions = {
-
-  // }
-
   constructor(props) {
     super(props);
 
@@ -40,6 +36,8 @@ class HomeScreen extends Component < {} > {
       dataSource: ds,
       suggegstions: {}, // 代表一个空json,生活建议
       aqi: {}, // aqi
+      basic: {},
+      title: '海淀'
     };
   }
 
@@ -58,7 +56,6 @@ class HomeScreen extends Component < {} > {
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)}/>
             }>
-            
             {/*渲染头部信息*/}
             {this.reanderHeader()}
             {/*渲染天气预报列表*/}
@@ -74,35 +71,39 @@ class HomeScreen extends Component < {} > {
   }
 
   _onRefresh() {
-    this.setupData();
+    this.setupData(this.state.title);
   }
 
   componentDidMount() {
     console.log(screenWidth)
     console.log(screenHeight)
-    this.setupData();
+    this.setupData(this.state.title);
   }
 
   componentWillUnmount() {
     console.log('HomeScreen','componentWillUnmount')
   }
 
-  setupData() {
-    fetch('http://guolin.tech/api/weather?cityid=CN101050101&key=41dd96cb90344217acbf5fe0813f16cd')
+  setupData(cityname) {
+    // cityid可以使用cityid 也可以使用 城市名，选择城市回调回来
+    let urlstr = 'http://guolin.tech/api/weather?key=41dd96cb90344217acbf5fe0813f16cd' + '&cityid=' + cityname
+    console.log(urlstr)
+    fetch(urlstr)
       .then((response) => response.json())
       .then((responseJson) => {
         console.log('success1', responseJson);
         console.log('success2', responseJson.HeWeather[0].daily_forecast);
         console.log('success3', responseJson.HeWeather[0].suggestion);
-        console.log('success3', responseJson.HeWeather[0].suggestion['air']);
-        // console.log(JSON.parse(responseJson));
-        // alert(responseJson.toString());
+
         this.setState({
           refreshing: false,
           isLoading: false,
           dataSource: this.state.dataSource.cloneWithRows(responseJson.HeWeather[0].daily_forecast),
           suggegstions: responseJson.HeWeather[0].suggestion,
           aqi: responseJson.HeWeather[0].aqi,
+          title: responseJson.HeWeather[0].basic.city,
+          des: responseJson.HeWeather[0].now.cond.txt,
+          temp: responseJson.HeWeather[0].now.tmp,
         })
       })
       .catch((error) => {
@@ -113,13 +114,21 @@ class HomeScreen extends Component < {} > {
   reanderHeader() {
     return (
       <View style={styles.header}>
-            <Text style={styles.headerTitle}>哈尔滨</Text>
-            <Text style={styles.headerDes}>晴</Text>
-            <Text style={styles.headerTepe}>8℃</Text>
-            <Button style={{color: 'red'}}
-              title="选择城市"
-              onPress={() => this.props.navigation.navigate('City',{name: "哈尔滨"})}
-              />
+
+            <View style={{flexDirection: 'row', alignItems: 'center' ,marginTop: 44, marginBottom: 10}}>
+              <Text style={styles.headerTitle}>{this.state.title}</Text>
+              <TouchableOpacity onPress={() => this.props.navigation.navigate('City',{name: this.state.title, currentLevel: 0, callBack: (data) => {
+                  console.log(data) // weather_id
+                  // this.setState({
+                  //   title: data
+                  // })
+                  this.setupData(data);
+                }})}>
+                <Image source={require('./1204724.png')}/>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.headerDes}>{this.state.des}</Text>
+            <Text style={styles.headerTepe}>{this.state.temp}℃</Text>
       </View>
     );
   }
@@ -206,11 +215,30 @@ class CityScreen extends React.Component {
     headerMode: 'float',
     gesturesEnabled: true,
     headerTitle: `${navigation.state.params.name}`,
-    headerRight: <Button title="back" onPress={() => navigation.goBack(null)}/> ,
+    headerLeft:  (
+      <TouchableOpacity onPress={() => {
+        // if (navigation.state.params.currentLevel == 0) {
+          navigation.goBack(null)
+        // } else {
+        //   let level = navigation.state.params.currentLevel-1
+        //   setupData(level)
+        //   navigation.setParams({currentLevel: level})
+        // }
+        
+      }}>
+            <Image source={require('./moments_btn_back.png')} style={{marginLeft: 8}}/>    
+      </TouchableOpacity>
+      ),
+    //<Button title="back" onPress={() => navigation.goBack(null)}/> ,
+    headerStyle: {
+      // color: 'red'
+      backgroundColor: '#6666ff',
+    },
+    headerTintColor: 'white',
+    headerTitleStyle: {
+      fontSize: 20
+    }
   });
-
-  // static provinceData = this.props.navigation.state.params.itemData
-
 
   constructor(props) {
     super(props);
@@ -219,35 +247,28 @@ class CityScreen extends React.Component {
       loading: true,
       currentLevel: 0, // 0:province, 1:city, 2:county;
       provinces: [{}],
-      cities: [{}],
-      counties: [{}],
+      provinceData: {},
+      cityData: {}
     };
   }
 
   componentDidMount() {
-    this.setupData()
+    this.setupData(0)
   }
 
-  setupData() {
+  setupData(level) {
     
     var urlstr = ''
     
-    var level = this.state.currentLevel
-    if (this.props.navigation.state.params.level) {
-      level = this.props.navigation.state.params.level
-    }
-    console.log(level)
-    console.log(this.props.navigation.state.params.level)
-    console.log(this.state.currentLevel)
-
     if (level == 0) {
       urlstr = 'http://guolin.tech/api/china'
     } else if (level == 1) {
-      let provinceData = this.props.navigation.state.params.provinceData
+      let provinceData = this.state.provinceData
+      console.log(provinceData)
       urlstr = 'http://guolin.tech/api/china/' + `${provinceData.id}`
     } else if (level == 2) {
-      let provinceData = this.props.navigation.state.params.provinceData
-      let cityData = this.props.navigation.state.params.cityData
+      let provinceData = this.state.provinceData
+      let cityData = this.state.cityData
       urlstr = 'http://guolin.tech/api/china/' + `${provinceData.id}` + '/' + `${cityData.id}`
     }
     console.log(urlstr)
@@ -255,13 +276,6 @@ class CityScreen extends React.Component {
     .then((response) => response.json())
     .then((responseJson) => {
       console.log(responseJson)
-      if (level == 0) {
-
-      } else if (level == 1) {
-
-      } else if (level == 2) {
-
-      }
       this.setState({
         loading: false,
         provinces: responseJson,
@@ -275,40 +289,54 @@ class CityScreen extends React.Component {
   }
 
     render() {
-      
+      const { navigation } = this.props;
+      const { state, setParams, goBack } = navigation;
+      const { params, currentLevel } = state;
       if (this.state.loading) {
         return  (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
           <ActivityIndicator/>
         </View>)
       } 
       return (
-        <View style={{backgroundColor: 'white', width: screenWidth,height: screenHeight}}>
+        <View style={{backgroundColor: 'white'}}>
           <FlatList
             data={this.state.provinces}
             renderItem={({item}) => { 
-              if (this.state.currentLevel == 2) {
-                return (
-                  <Button 
-                  title={`${item.name}`}
-                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
-                  onPress={() => {this.props.navigation.dispatch(resetAction)}}
-                  >
-                </Button>
-                  )
-              }
               return (
                 <Button 
                   title={`${item.name}`}
-                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
+                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center', color: 'gray'}} 
                   onPress={() => {
-                      this.state.currentLevel == 0 ? this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: item}) : this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: this.props.navigation.state.params.provinceData,cityData: item})
-                    }}>
+                      setParams({name: item.name})
+                      let level = this.state.currentLevel
+                      if (this.state.currentLevel === 0) {
+                        this.state.provinceData = item
+                      } else if (this.state.currentLevel === 1) {
+                        this.state.cityData = item
+                      }
+                      if (this.state.currentLevel === 2) {
+                        console.log("goBack")
+                        state.params.callBack(item.weather_id) // 回调
+                        goBack(null)
+                      } else {
+                        this.state.currentLevel = level + 1
+                        setParams({currentLevel: level + 1})
+                        console.log(this.state.currentLevel)
+                        // console.log(this.state.provinceData )
+                        this.state.loading = true 
+                        this.setupData(this.state.currentLevel)
+                      }
+                    }
+                  }>
                 </Button>
                
               )} }
             ItemSeparatorComponent={ () => { return (
               <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
               )}}
+            keyExtractor={
+              (item, index) => item.id
+            }
           />
         </View>
         )
@@ -351,11 +379,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#0000',
     alignItems: 'center'
   },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    // justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 44,
+    backgroundColor: 'red',
+    width: screenWidth,
+  },
   headerTitle: {
     color: 'white',
     fontSize: 30,
-    marginTop: 44,
-    marginBottom: 10,
+    marginRight: 20,
+    // marginTop: 44,
+    // marginBottom: 10,
   },
   headerTepe: {
     color: 'white',
@@ -406,13 +443,6 @@ const StackCity = StackNavigator({
   City: {
       screen: CityScreen,
     },
-    Home: {
-      screen: HomeScreen,
-      navigationOptions: {
-         headerMode: 'none',
-         mode: 'modal'
-      }
-    },
 });
 
 
@@ -427,7 +457,7 @@ const StackApp = StackNavigator(
   },
   {
     headerMode: 'none',
-    mode: 'modal'
+    mode: 'modal',
   },
   );
 
