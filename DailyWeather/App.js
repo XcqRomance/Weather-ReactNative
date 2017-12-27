@@ -13,7 +13,8 @@ import {
   ListView,
   RefreshControl,
   ActivityIndicator,
-  Button
+  Button,
+  VirtualizedList,
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 
@@ -114,7 +115,7 @@ class HomeScreen extends Component < {} > {
             <Text style={styles.headerTepe}>8℃</Text>
             <Button style={{color: 'red'}}
               title="选择城市"
-              onPress={() => this.props.navigation.navigate('City')}
+              onPress={() => this.props.navigation.navigate('City',{name: "哈尔滨"})}
               />
       </View>
     );
@@ -197,18 +198,113 @@ renderSuggestion() {
 }
 
 class CityScreen extends React.Component {
+
   static navigationOptions = ({navigation}) => ({
     headerMode: 'float',
-    gesturesEnabled: false,
-    headerTitle: '北京',
+    gesturesEnabled: true,
+    headerTitle: `${navigation.state.params.name}`,
     headerRight: <Button title="back" onPress={() => navigation.goBack(null)}/> ,
   });
 
+  // static provinceData = this.props.navigation.state.params.itemData
+
+
+  constructor(props) {
+    super(props);
+  
+    this.state = {
+      loading: true,
+      currentLevel: 0, // 0:province, 1:city, 2:county;
+      provinces: [{}],
+      cities: [{}],
+      counties: [{}],
+    };
+  }
+
+  componentDidMount() {
+    this.setupData()
+  }
+
+  setupData() {
+    
+    var urlstr = ''
+    
+    var level = this.state.currentLevel
+    if (this.props.navigation.state.params.level) {
+      level = this.props.navigation.state.params.level
+    }
+    console.log(level)
+    console.log(this.props.navigation.state.params.level)
+    console.log(this.state.currentLevel)
+
+    if (level == 0) {
+      urlstr = 'http://guolin.tech/api/china'
+    } else if (level == 1) {
+      let provinceData = this.props.navigation.state.params.provinceData
+      urlstr = 'http://guolin.tech/api/china/' + `${provinceData.id}`
+    } else if (level == 2) {
+      let provinceData = this.props.navigation.state.params.provinceData
+      let cityData = this.props.navigation.state.params.cityData
+      urlstr = 'http://guolin.tech/api/china/' + `${provinceData.id}` + '/' + `${cityData.id}`
+    }
+    console.log(urlstr)
+    fetch(urlstr)
+    .then((response) => response.json())
+    .then((responseJson) => {
+      console.log(responseJson)
+      if (level == 0) {
+
+      } else if (level == 1) {
+
+      } else if (level == 2) {
+
+      }
+      this.setState({
+        loading: false,
+        provinces: responseJson,
+        currentLevel: level,
+      })
+      // console.log(this.state.currentLevel)
+    })
+    .catch((error) => {
+        console.error(error);
+    });
+  }
+
     render() {
+      
+      if (this.state.loading) {
+        return  (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+          <ActivityIndicator/>
+        </View>)
+      } 
       return (
-        <View>
-          <Text>sdfsdfsdfsdfasdfasdfasfasfasas</Text>
-          <Button title="back" onPress={() => this.props.navigation.goBack(null)}/>
+        <View style={{backgroundColor: 'white', width: screenWidth,height: screenHeight}}>
+          <FlatList
+            data={this.state.provinces}
+            renderItem={({item}) => { return (
+              <Button 
+                title={`${item.name}`}
+                style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
+                onPress={() => {
+                    this.state.currentLevel == 0 ? this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: item}) : this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: this.props.navigation.state.params.provinceData,cityData: item})
+                  }}>
+                <Text style={{color: 'gray', fontSize: 20}}>{item.name}</Text>
+              </Button>
+               
+            )} }
+            ItemSeparatorComponent={ () => { return (
+              <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
+              )}}
+          />
+        </View>
+        )
+    }
+
+    _renderItem = (item) => {
+      return (
+        <View style={{backgroundColor: 'white',height: 44}}>
+          <Text style={{padding: 20, color: 'gray'}}>{item.name}</Text>
         </View>
         )
     }
@@ -303,6 +399,7 @@ const StackApp = StackNavigator(
   },
   {
     headerMode: 'none',
+    mode: 'modal'
   },
   );
 
