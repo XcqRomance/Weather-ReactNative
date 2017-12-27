@@ -16,8 +16,7 @@ import {
   Button,
   VirtualizedList,
 } from 'react-native';
-import { StackNavigator } from 'react-navigation';
-
+import { StackNavigator, NavigationActions } from 'react-navigation';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -82,6 +81,10 @@ class HomeScreen extends Component < {} > {
     console.log(screenWidth)
     console.log(screenHeight)
     this.setupData();
+  }
+
+  componentWillUnmount() {
+    console.log('HomeScreen','componentWillUnmount')
   }
 
   setupData() {
@@ -282,17 +285,27 @@ class CityScreen extends React.Component {
         <View style={{backgroundColor: 'white', width: screenWidth,height: screenHeight}}>
           <FlatList
             data={this.state.provinces}
-            renderItem={({item}) => { return (
-              <Button 
-                title={`${item.name}`}
-                style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
-                onPress={() => {
-                    this.state.currentLevel == 0 ? this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: item}) : this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: this.props.navigation.state.params.provinceData,cityData: item})
-                  }}>
-                <Text style={{color: 'gray', fontSize: 20}}>{item.name}</Text>
-              </Button>
+            renderItem={({item}) => { 
+              if (this.state.currentLevel == 2) {
+                return (
+                  <Button 
+                  title={`${item.name}`}
+                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
+                  onPress={() => {this.props.navigation.dispatch(resetAction)}}
+                  >
+                </Button>
+                  )
+              }
+              return (
+                <Button 
+                  title={`${item.name}`}
+                  style={{backgroundColor: 'white',height: 44, justifyContent: 'center', alignItems: 'center'}} 
+                  onPress={() => {
+                      this.state.currentLevel == 0 ? this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: item}) : this.props.navigation.navigate('City',{name: `${item.name}`, level: this.state.currentLevel + 1,provinceData: this.props.navigation.state.params.provinceData,cityData: item})
+                    }}>
+                </Button>
                
-            )} }
+              )} }
             ItemSeparatorComponent={ () => { return (
               <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
               )}}
@@ -308,8 +321,16 @@ class CityScreen extends React.Component {
         </View>
         )
     }
-  }
 
+    componentWillUnmount() {
+    console.log('CityScreen','componentWillUnmount')
+  }
+}
+
+resetAction = NavigationActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({routeName: 'Home'})]
+})
 
 const styles = StyleSheet.create({
   container: {
@@ -384,7 +405,14 @@ const styles = StyleSheet.create({
 const StackCity = StackNavigator({
   City: {
       screen: CityScreen,
-    }
+    },
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: {
+         headerMode: 'none',
+         mode: 'modal'
+      }
+    },
 });
 
 
