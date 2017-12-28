@@ -23,9 +23,10 @@ var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
 
 class HomeScreen extends Component < {} > {
+
+  //组件的构造方法，在组建创建的时候调用
   constructor(props) {
     super(props);
-
     var ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2
     });
@@ -37,10 +38,11 @@ class HomeScreen extends Component < {} > {
       suggegstions: {}, // 代表一个空json,生活建议
       aqi: {}, // aqi
       basic: {},
-      title: '海淀'
+      title: '海淀' // 默认获取海淀区的天气
     };
   }
 
+  // 页面的渲染
   render() {
     if (this.state.isLoading) {
       return (
@@ -51,6 +53,7 @@ class HomeScreen extends Component < {} > {
     }
     return (
       <View style={{flex: 1}}>
+        {/*北京图*/}
         <ImageBackground source={{uri: 'http://cn.bing.com/az/hprichbg/rb/BarHarborCave_ROW9345444229_1920x1080.jpg'}}  style={{width: screenWidth, height: screenHeight}}>
           <ScrollView style = {{flex: 1}} 
             refreshControl={
@@ -74,12 +77,14 @@ class HomeScreen extends Component < {} > {
     this.setupData(this.state.title);
   }
 
+  // 组件已经装载，绘制完毕调用
   componentDidMount() {
     console.log(screenWidth)
     console.log(screenHeight)
     this.setupData(this.state.title);
   }
 
+  // 组件即将卸载，组件要被从界面上移除时调用
   componentWillUnmount() {
     console.log('HomeScreen','componentWillUnmount')
   }
@@ -119,9 +124,6 @@ class HomeScreen extends Component < {} > {
               <Text style={styles.headerTitle}>{this.state.title}</Text>
               <TouchableOpacity onPress={() => this.props.navigation.navigate('City',{name: this.state.title, currentLevel: 0, callBack: (data) => {
                   console.log(data) // weather_id
-                  // this.setState({
-                  //   title: data
-                  // })
                   this.setupData(data);
                 }})}>
                 <Image source={require('./address.png')}/>
@@ -149,64 +151,63 @@ class HomeScreen extends Component < {} > {
               )}/> 
       </View>
     );
-}
-// ,marginBottom: 20,marginTop: 20,marginLeft: 20  ,marginBottom: 20,marginTop: 20
-renderAirquilty() {
-  let {
-    aqi
-  } = this.state;
-  return (
-    <View>
-        <View style={styles.suggestion}>
-          <View style={{flexDirection: 'row',justifyContent: 'flex-start', alignItems: 'center',padding: 20}}>
-            <Text style={{color: 'white',fontSize: 20}}>空气质量：</Text>
-            <Text style={{color: 'red',fontSize: 17}}>{aqi.city.qlty}</Text>
-          </View>
-          <View style={{flex: 1,flexDirection: 'row'}}>
-            <View style={{flex: 1, alignItems: 'center' }}>
-              <Text style={styles.airQuiltyDes}>AQI指数</Text>
-              <Text style={styles.airQuiltyValue}>{aqi.city.aqi}</Text>
+  }
+
+  renderAirquilty() {
+    let {
+      aqi
+    } = this.state;
+    return (
+      <View>
+          <View style={styles.suggestion}>
+            <View style={{flexDirection: 'row',justifyContent: 'flex-start', alignItems: 'center',padding: 20}}>
+              <Text style={{color: 'white',fontSize: 20}}>空气质量：</Text>
+              <Text style={{color: 'red',fontSize: 17}}>{aqi.city.qlty}</Text>
             </View>
-            <View style={{flex: 1, alignItems: 'center' }}>
-              <Text style={styles.airQuiltyDes}>PM2.5</Text>
-              <Text style={styles.airQuiltyValue}>{aqi.city.pm25}</Text>
+            <View style={{flex: 1,flexDirection: 'row'}}>
+              <View style={{flex: 1, alignItems: 'center' }}>
+                <Text style={styles.airQuiltyDes}>AQI指数</Text>
+                <Text style={styles.airQuiltyValue}>{aqi.city.aqi}</Text>
+              </View>
+              <View style={{flex: 1, alignItems: 'center' }}>
+                <Text style={styles.airQuiltyDes}>PM2.5</Text>
+                <Text style={styles.airQuiltyValue}>{aqi.city.pm25}</Text>
+              </View>
             </View>
-          </View>
-          <View style={{flex: 1,flexDirection: 'row'}}>
-            <View style={{flex: 1,alignItems: 'center' }}>
-              <Text style={styles.airQuiltyDes}>PM10</Text>
-              <Text style={styles.airQuiltyValue}>{aqi.city.pm10}</Text>
-            </View>
-            <View style={{flex: 1, alignItems: 'center' }}>
-              <Text style={styles.airQuiltyDes}>O3指数</Text>
-              <Text style={styles.airQuiltyValue}>{aqi.city.o3}</Text>
+            <View style={{flex: 1,flexDirection: 'row'}}>
+              <View style={{flex: 1,alignItems: 'center' }}>
+                <Text style={styles.airQuiltyDes}>PM10</Text>
+                <Text style={styles.airQuiltyValue}>{aqi.city.pm10}</Text>
+              </View>
+              <View style={{flex: 1, alignItems: 'center' }}>
+                <Text style={styles.airQuiltyDes}>O3指数</Text>
+                <Text style={styles.airQuiltyValue}>{aqi.city.o3}</Text>
+              </View>
             </View>
           </View>
         </View>
-      </View>
-  )
-}
+    )
+  }
 
-renderSuggestion() {
-  let {
-    suggegstions
-  } = this.state;
-  return (
-    <View style={styles.suggestion}>
-        <Text style={{color: 'white',fontSize: 20,marginBottom: 20,marginTop: 20,marginLeft: 20}}>生活建议</Text>
+  renderSuggestion() {
+    let {
+      suggegstions
+    } = this.state;
+    return (
+      <View style={styles.suggestion}>
+          <Text style={{color: 'white',fontSize: 20,marginBottom: 20,marginTop: 20,marginLeft: 20}}>生活建议</Text>
 
-        <Text style={styles.suggestionDes}>空气质量：{suggegstions.air.txt}</Text>
-        <Text style={styles.suggestionDes}>舒适度：{suggegstions.comf.txt}</Text>
-        <Text style={styles.suggestionDes}>洗车：{suggegstions.cw.txt}</Text>
-        <Text style={styles.suggestionDes}>穿衣：{suggegstions.drsg.txt}</Text>
-        <Text style={styles.suggestionDes}>感冒：{suggegstions.flu.txt}</Text>
-        <Text style={styles.suggestionDes}>运动：{suggegstions.sport.txt}</Text>
-        <Text style={styles.suggestionDes}>旅游：{suggegstions.trav.txt}</Text>
-        <Text style={styles.suggestionDes}>紫外线：{suggegstions.uv.txt}</Text>
-      </View>
-  );
-}
-
+          <Text style={styles.suggestionDes}>空气质量：{suggegstions.air.txt}</Text>
+          <Text style={styles.suggestionDes}>舒适度：{suggegstions.comf.txt}</Text>
+          <Text style={styles.suggestionDes}>洗车：{suggegstions.cw.txt}</Text>
+          <Text style={styles.suggestionDes}>穿衣：{suggegstions.drsg.txt}</Text>
+          <Text style={styles.suggestionDes}>感冒：{suggegstions.flu.txt}</Text>
+          <Text style={styles.suggestionDes}>运动：{suggegstions.sport.txt}</Text>
+          <Text style={styles.suggestionDes}>旅游：{suggegstions.trav.txt}</Text>
+          <Text style={styles.suggestionDes}>紫外线：{suggegstions.uv.txt}</Text>
+        </View>
+    );
+  }
 }
 
 class CityScreen extends React.Component {
@@ -217,21 +218,12 @@ class CityScreen extends React.Component {
     headerTitle: `${navigation.state.params.name}`,
     headerLeft:  (
       <TouchableOpacity onPress={() => {
-        // if (navigation.state.params.currentLevel == 0) {
-          navigation.goBack(null)
-        // } else {
-        //   let level = navigation.state.params.currentLevel-1
-        //   setupData(level)
-        //   navigation.setParams({currentLevel: level})
-        // }
-        
+          navigation.goBack(null)        
       }}>
-            <Image source={require('./moments_btn_back.png')} style={{marginLeft: 8}}/>    
+        <Image source={require('./moments_btn_back.png')} style={{marginLeft: 8}}/>    
       </TouchableOpacity>
       ),
-    //<Button title="back" onPress={() => navigation.goBack(null)}/> ,
     headerStyle: {
-      // color: 'red'
       backgroundColor: '#6666ff',
     },
     headerTintColor: 'white',
@@ -252,12 +244,63 @@ class CityScreen extends React.Component {
     };
   }
 
+  render() {
+    const { navigation } = this.props;
+    const { state, setParams, goBack } = navigation;
+    const { params, currentLevel } = state;
+    if (this.state.loading) {
+      return  (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator/>
+      </View>)
+    } 
+    return (
+        <FlatList style={{backgroundColor: 'white'}}
+          data={this.state.provinces}
+          renderItem={({item}) => { 
+            return (
+              <TouchableOpacity 
+                  style={{justifyContent: 'center', alignItems: 'center',height: 44}}
+                  onPress={() => {
+                    setParams({name: item.name})
+                    let level = this.state.currentLevel
+                    if (this.state.currentLevel === 0) {
+                      this.state.provinceData = item
+                    } else if (this.state.currentLevel === 1) {
+                      this.state.cityData = item
+                    }
+                    if (this.state.currentLevel === 2) {
+                      console.log("goBack")
+                      state.params.callBack(item.weather_id) // 回调
+                      goBack(null)
+                    } else {
+                      this.state.currentLevel = level + 1
+                      setParams({currentLevel: level + 1})
+                      console.log(this.state.currentLevel)
+                      // console.log(this.state.provinceData )
+                      this.state.loading = true 
+                      this.setupData(this.state.currentLevel)
+                    }
+                  }}>
+                  <Text style={{ color: 'gray', fontSize: 20}} >{item.name} </Text>   
+              </TouchableOpacity>
+             
+            )} }
+          ItemSeparatorComponent={ () => { return (
+            <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
+            )}}
+          keyExtractor={
+            (item, index) => item.id
+          }
+        />
+      )
+  }
+
   componentDidMount() {
     this.setupData(0)
   }
 
   setupData(level) {
-    
+  
     var urlstr = ''
     
     if (level == 0) {
@@ -285,69 +328,6 @@ class CityScreen extends React.Component {
     .catch((error) => {
         console.error(error);
     });
-  }
-
-    render() {
-      const { navigation } = this.props;
-      const { state, setParams, goBack } = navigation;
-      const { params, currentLevel } = state;
-      if (this.state.loading) {
-        return  (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-          <ActivityIndicator/>
-        </View>)
-      } 
-      return (
-          <FlatList style={{backgroundColor: 'white'}}
-            data={this.state.provinces}
-            renderItem={({item}) => { 
-              return (
-                <TouchableOpacity 
-                    style={{justifyContent: 'center', alignItems: 'center',height: 44}}
-                    onPress={() => {
-                      setParams({name: item.name})
-                      let level = this.state.currentLevel
-                      if (this.state.currentLevel === 0) {
-                        this.state.provinceData = item
-                      } else if (this.state.currentLevel === 1) {
-                        this.state.cityData = item
-                      }
-                      if (this.state.currentLevel === 2) {
-                        console.log("goBack")
-                        state.params.callBack(item.weather_id) // 回调
-                        goBack(null)
-                      } else {
-                        this.state.currentLevel = level + 1
-                        setParams({currentLevel: level + 1})
-                        console.log(this.state.currentLevel)
-                        // console.log(this.state.provinceData )
-                        this.state.loading = true 
-                        this.setupData(this.state.currentLevel)
-                      }
-                    }}>
-                    <Text style={{ color: 'gray', fontSize: 20}} >{item.name} </Text>   
-                </TouchableOpacity>
-               
-              )} }
-            ItemSeparatorComponent={ () => { return (
-              <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
-              )}}
-            keyExtractor={
-              (item, index) => item.id
-            }
-          />
-        )
-    }
-
-    _renderItem = (item) => {
-      return (
-        <View style={{backgroundColor: 'white',height: 44}}>
-          <Text style={{padding: 20, color: 'gray'}}>{item.name}</Text>
-        </View>
-        )
-    }
-
-    componentWillUnmount() {
-    console.log('CityScreen','componentWillUnmount')
   }
 }
 
