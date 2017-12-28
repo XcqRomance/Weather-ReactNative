@@ -124,7 +124,7 @@ class HomeScreen extends Component < {} > {
                   // })
                   this.setupData(data);
                 }})}>
-                <Image source={require('./1204724.png')}/>
+                <Image source={require('./address.png')}/>
               </TouchableOpacity>
             </View>
             <Text style={styles.headerDes}>{this.state.des}</Text>
