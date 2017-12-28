@@ -212,49 +212,49 @@ class HomeScreen extends Component < {} > {
 
 class CityScreen extends React.Component {
 
-  static navigationOptions = ({navigation}) => ({
-    headerMode: 'float',
-    gesturesEnabled: true,
-    headerTitle: `${navigation.state.params.name}`,
-    headerLeft:  (
-      <TouchableOpacity onPress={() => {
+    static navigationOptions = ({ navigation }) => ({
+      headerMode: 'float',
+      gesturesEnabled: true,
+      headerTitle: `${navigation.state.params.name}`,
+      headerLeft: (
+        <TouchableOpacity onPress={() => {
           navigation.goBack(null)        
       }}>
         <Image source={require('./moments_btn_back.png')} style={{marginLeft: 8}}/>    
       </TouchableOpacity>
       ),
-    headerStyle: {
-      backgroundColor: '#6666ff',
-    },
-    headerTintColor: 'white',
-    headerTitleStyle: {
-      fontSize: 20
+      headerStyle: {
+        backgroundColor: '#6666ff',
+      },
+      headerTintColor: 'white',
+      headerTitleStyle: {
+        fontSize: 20
+      }
+    });
+
+    constructor(props) {
+      super(props);
+
+      this.state = {
+        loading: true,
+        currentLevel: 0, // 0:province, 1:city, 2:county;
+        provinces: [{}],
+        provinceData: {},
+        cityData: {}
+      };
     }
-  });
 
-  constructor(props) {
-    super(props);
-  
-    this.state = {
-      loading: true,
-      currentLevel: 0, // 0:province, 1:city, 2:county;
-      provinces: [{}],
-      provinceData: {},
-      cityData: {}
-    };
-  }
-
-  render() {
-    const { navigation } = this.props;
-    const { state, setParams, goBack } = navigation;
-    const { params, currentLevel } = state;
-    if (this.state.loading) {
-      return  (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+    render() {
+        const { navigation } = this.props;
+        const { state, setParams, goBack } = navigation;
+        const { params, currentLevel } = state;
+        if (this.state.loading) {
+          return (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator/>
       </View>)
-    } 
-    return (
-        <FlatList style={{backgroundColor: 'white'}}
+        }
+        return (
+            <FlatList style={{backgroundColor: 'white'}}
           data={this.state.provinces}
           renderItem={({item}) => { 
             return (
@@ -300,9 +300,9 @@ class CityScreen extends React.Component {
   }
 
   setupData(level) {
-  
+
     var urlstr = ''
-    
+
     if (level == 0) {
       urlstr = 'http://guolin.tech/api/china'
     } else if (level == 1) {
@@ -316,25 +316,21 @@ class CityScreen extends React.Component {
     }
     console.log(urlstr)
     fetch(urlstr)
-    .then((response) => response.json())
-    .then((responseJson) => {
-      console.log(responseJson)
-      this.setState({
-        loading: false,
-        provinces: responseJson,
-        currentLevel: level,
+      .then((response) => response.json())
+      .then((responseJson) => {
+        console.log(responseJson)
+        this.setState({
+          loading: false,
+          provinces: responseJson,
+          currentLevel: level,
+        })
       })
-    })
-    .catch((error) => {
+      .catch((error) => {
         console.error(error);
-    });
+      });
   }
 }
 
-resetAction = NavigationActions.reset({
-  index: 0,
-  actions: [NavigationActions.navigate({routeName: 'Home'})]
-})
 
 const styles = StyleSheet.create({
   container: {
@@ -419,7 +415,7 @@ const StackCity = StackNavigator({
   City: {
       screen: CityScreen,
     },
-});
+})
 
 
 const StackApp = StackNavigator(
@@ -435,7 +431,7 @@ const StackApp = StackNavigator(
     headerMode: 'none',
     mode: 'modal',
   },
-  );
+)
 
 export default class App extends React.Component {
   render() {

@@ -1,0 +1,31 @@
+{
+    "env": {
+        "es6": true,
+        "node": true,
+        "react-native/react-native": true
+    },
+    "extends": ["eslint:recommended", "plugin:react/recommended","plugin:react-native/all"],
+    "plugins": [
+        "react",
+        "react-native"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": { 
+        "ecmaVersion": 6,
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "rules": { // 规则，包括React Native语法的规则
+        "class-methods-use-this": 0,
+        "react-native/no-color-literals": 0,
+        "react-native/no-unused-styles": 0,
+        "react-native/no-inline-styles": 0,
+        "react-native/split-platform-components": 2,
+        "no-unused-vars": 0,
+        "no-use-before-define": 0,
+        "no-console": 0,
+        "react/prop-types": 0,
+        "react/no-direct-mutation-state": 0
+  }
+}
