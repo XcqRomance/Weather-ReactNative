@@ -8,9 +8,9 @@ a weather forecast app, build in react native
 
 Before running the app, make sure you ran:
 
-git clone https://github.com/XcqRomance/Weather-ReactNative.git
-cd DailyWeather
-npm install
+    git clone https://github.com/facebook/react-native.git
+    cd react-native
+    npm install
 
 ### Running on iOS
 
