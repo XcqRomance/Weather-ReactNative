@@ -26,13 +26,13 @@ const WeatherTab = StackNavigator(
     Weather: {
       screen: WeatherScreen,
     },
-    City: {
-      screen: StackCity,
-    }
+    // City: {
+    //   screen: StackCity,
+    // }
   },
   {
     headerMode: 'none',
-    mode: 'modal',
+    // mode: 'modal',
   },
 );
 
@@ -81,18 +81,24 @@ const TabsApp = TabNavigator(
     },
     
   },
-  // {
-  //   tabBarPosition: 'bottom',
-  //   animationEnabled: false,
-  //   swipeEnabled: false,
-  //   tabBarOptions: {
-  //     activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#fff',
-  //   },
-  // }
 );
+
+const StacksOverTabs = StackNavigator(
+  {
+    Root: {
+      screen: TabsApp,
+    },
+    City: {
+      screen: StackCity,
+    }
+  },
+  {
+    headerMode: 'none',
+  }
+)
 
 export default class App extends React.Component {
   render() {
-    return <TabsApp />
+    return <StacksOverTabs />
   }
 }
