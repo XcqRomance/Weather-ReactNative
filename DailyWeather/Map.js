@@ -19,10 +19,10 @@ import {
 } from 'react-native';
 import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
 
-export default class Map extends Component < {} > {
+export default class MapScreen extends Component < {} > {
   render() {
     return (
-      <View style={{backgroundColor: 'red'}}>
+      <View style={{backgroundColor: 'yellow'}}>
         <Text >fasfsdfasdfasdfasdf</Text>
       </View>
 
