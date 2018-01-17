@@ -243,16 +243,13 @@ const styles = StyleSheet.create({
     height: 44,
   },
   itemHeader: {
-    // backgroundColor: 'white',
     flexDirection: 'row',
-    // justifyContent: 'center',
     alignItems: 'center',
   },
   avator: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    // marginTop: 20,
     marginLeft: 20
   },
   name: {

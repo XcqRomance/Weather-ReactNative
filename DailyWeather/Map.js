@@ -3,13 +3,13 @@ import {
   Text,
   View,
 } from 'react-native';
-import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
+// import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
 
 export default class MapScreen extends React.Component {
   render() {
     return (
       <View style={{backgroundColor: 'yellow'}}>
-        <Text >fasfsdfasdfasdfasdf</Text>
+        <Text style={{width: '100%', height: '100%',backgroundColor: 'red'}}>fasfsdfasdfasdfasdf</Text>
       </View>
 
     )

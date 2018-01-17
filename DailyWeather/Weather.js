@@ -4,7 +4,7 @@ import {
   Text,
   View,
   ScrollView,
-  Dimensions,
+  // Dimensions,
   Image,
   ImageBackground,
   ListView,
@@ -13,8 +13,8 @@ import {
   TouchableOpacity
 } from 'react-native';
 
-var screenWidth = Dimensions.get('window').width;
-var screenHeight = Dimensions.get('window').height;
+// var screenWidth = Dimensions.get('window').width;
+// var screenHeight = Dimensions.get('window').height;
 
 export default class WeatherScreen extends React.Component {
 
@@ -46,9 +46,9 @@ export default class WeatherScreen extends React.Component {
       )
     }
     return (
-      <View style={{flex: 1}}>
+      <View>
         {/*北京图*/}
-        <ImageBackground source={{uri: 'http://cn.bing.com/az/hprichbg/rb/BarHarborCave_ROW9345444229_1920x1080.jpg'}}  style={{width: screenWidth, height: screenHeight}}>
+        <ImageBackground source={{uri: 'http://cn.bing.com/az/hprichbg/rb/BarHarborCave_ROW9345444229_1920x1080.jpg'}} style={{width: '100%', height: '100%'}}>
           <ScrollView style = {{flex: 1}} 
             refreshControl={
               <RefreshControl refreshing={this.state.refreshing} onRefresh={this._onRefresh.bind(this)}/>
@@ -73,8 +73,6 @@ export default class WeatherScreen extends React.Component {
 
   // 组件已经装载，绘制完毕调用
   componentDidMount() {
-    console.log(screenWidth)
-    console.log(screenHeight)
     this.setupData(this.state.title);
   }
 
@@ -205,12 +203,6 @@ export default class WeatherScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
   listView: {
     flex: 1,
     flexDirection: 'row',
@@ -229,7 +221,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 44,
     backgroundColor: 'red',
-    width: screenWidth,
+    width: '100%',
   },
   headerTitle: {
     color: 'white',
