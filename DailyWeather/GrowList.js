@@ -1,7 +1,7 @@
 import React from 'react';
-import { StyleSheet, Text, View, FlatList, Image, ItemSeparatorComponent, ImageBackground, ListView, ActivityIndicator, RefreshControl} from 'react-native';
+import { StyleSheet, Text, View, FlatList, Image, ImageBackground, ListView, ActivityIndicator } from 'react-native';
 import ImageList from './ImageList';
-import AvatarList from './AvatarList'
+import AvatarList from './AvatarList';
 
 export default class GrowListScreen extends React.Component {
   constructor(props) {

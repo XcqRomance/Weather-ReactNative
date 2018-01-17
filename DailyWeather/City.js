@@ -1,23 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {
-  Platform,
-  StyleSheet,
   Text,
   View,
-  ScrollView,
   FlatList,
-  Dimensions,
   Image,
-  ImageBackground,
-  TouchableHighlight,
-  ListView,
-  RefreshControl,
   ActivityIndicator,
-  Button,
-  VirtualizedList,
   TouchableOpacity
 } from 'react-native';
-import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
 
 export default class CityScreen extends React.Component {
 
@@ -56,7 +45,7 @@ export default class CityScreen extends React.Component {
     render() {
         const { navigation } = this.props;
         const { state, setParams, goBack } = navigation;
-        const { params, currentLevel } = state;
+        // const { params, currentLevel } = state;
         if (this.state.loading) {
           return (<View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator/>
@@ -98,7 +87,7 @@ export default class CityScreen extends React.Component {
             <View style={{height: 1, backgroundColor: '#eee'}}/> //</View>
             )}}
           keyExtractor={
-            (item, index) => item.id
+            (item) => item.id
           }
         />
       )
