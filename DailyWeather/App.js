@@ -5,12 +5,21 @@ import CityScreen from './City';
 import GrowListScreen from './GrowList';
 import WeatherScreen from './Weather';
 
+if (!__DEV__) { // 正式环境console不打印
+  global.console = {
+    info: () => {},
+    log: () => {},
+    warn: () => {},
+    debug: () => {},
+    error: () => {},
+  };
+}
+
 const StackCity = StackNavigator({
   City: {
       screen: CityScreen,
     },
 });
-
 
 const WeatherTab = StackNavigator(
   {

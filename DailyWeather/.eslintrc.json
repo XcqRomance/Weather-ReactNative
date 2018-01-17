@@ -24,7 +24,7 @@
         "react-native/split-platform-components": 2,
         // "no-unused-vars": 0, // 是否检测未使用的变量，0:不检测；注释这行将对未使用的变量语法检测高亮
         "no-use-before-define": 0,
-        // "no-console": 0, // 是否检测 console 方法，0:不检测；注释这行将对console语句语法检测高亮
+        "no-console": 0, // 是否检测 console 方法，0:不检测；注释这行将对console语句语法检测高亮
         "react/prop-types": 0,
         "react/no-direct-mutation-state": 0
   }
