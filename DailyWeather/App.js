@@ -20,7 +20,7 @@ import {
 import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
 import MapScreen from './Map';
 import CityScreen from './City';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
+import GrowListScreen from './GrowList';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -129,7 +129,7 @@ class HomeScreen extends Component < {} > {
                   console.log(data) // weather_id
                   this.setupData(data);
                 }})}>
-                <Image source={require('./address.png')}/>
+                <Image source={require('./img/address.png')}/>
               </TouchableOpacity>
             </View>
             <Text style={styles.headerDes}>{this.state.des}</Text>
@@ -213,7 +213,83 @@ class HomeScreen extends Component < {} > {
   }
 }
 
+const StackCity = StackNavigator({
+  City: {
+      screen: CityScreen,
+    },
+});
 
+
+const WeatherTab = StackNavigator(
+  {
+    Weather: {
+      screen: HomeScreen,
+      path: '/',
+    },
+    City: {
+      screen: StackCity,
+    }
+  },
+  {
+    headerMode: 'none',
+    mode: 'modal',
+  },
+);
+
+const GrowListTab = StackNavigator(
+  {
+    GrowList: {
+      screen: GrowListScreen,
+      navigationOptions: {
+        title: 'Long List',
+      },
+    }
+  }
+
+)
+
+const MapTab = StackNavigator(
+  {
+    Map: {
+      screen: MapScreen,
+      navigationOptions: {
+        title: 'Map View',
+      },
+    }
+  }
+);
+
+const TabsApp = TabNavigator(
+  {
+    WeatherTab: {
+      screen: WeatherTab,
+      navigationOptions: {
+        tabBarLabel: '天气',
+      },
+    },
+    ListTab: {
+      screen: GrowListTab,
+      navigationOptions: {
+        tabBarLabel: '长列表'
+      }
+    },
+    MapTab: {
+      screen: MapTab,
+      navigationOptions: {
+        tabBarLabel: '地图1'
+      }
+    },
+    
+  },
+  // {
+  //   tabBarPosition: 'bottom',
+  //   animationEnabled: false,
+  //   swipeEnabled: false,
+  //   tabBarOptions: {
+  //     activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#fff',
+  //   },
+  // }
+);
 
 const styles = StyleSheet.create({
   container: {
@@ -293,74 +369,6 @@ const styles = StyleSheet.create({
     marginBottom: 10
   }
 });
-
-
-const StackCity = StackNavigator({
-  City: {
-      screen: CityScreen,
-    },
-});
-
-
-const WeatherTab = StackNavigator(
-  {
-    Weather: {
-      screen: HomeScreen,
-      path: '/',
-    },
-    City: {
-      screen: StackCity,
-    }
-  },
-  {
-    headerMode: 'none',
-    mode: 'modal',
-  },
-);
-
-const MapTab = StackNavigator(
-  {
-    Map: {
-      screen: MapScreen,
-      path: '/map',
-    }
-  }
-);
-
-const TabsApp = TabNavigator(
-  {
-    WeatherTab: {
-      screen: WeatherTab,
-      // path: '/',
-      navigationOptions: {
-        tabBarLabel: '天气',
-      },
-    },
-    MapTab: {
-      screen: MapTab,
-      // path: '/map',
-      navigationOptions: {
-        tabBarLabel: '地图1'
-      }
-    },
-    ListTab: {
-      screen: MapTab,
-      // path: '/map',
-      navigationOptions: {
-        tabBarLabel: '地图2'
-      }
-    },
-  },
-  // {
-  //   tabBarPosition: 'bottom',
-  //   animationEnabled: false,
-  //   swipeEnabled: false,
-  //   tabBarOptions: {
-  //     activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#fff',
-  //   },
-  // }
-);
-
 
 export default class App extends React.Component {
   render() {

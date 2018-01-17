@@ -29,7 +29,7 @@ export default class CityScreen extends React.Component {
         <TouchableOpacity onPress={() => {
           navigation.goBack(null)        
       }}>
-        <Image source={require('./moments_btn_back.png')} style={{marginLeft: 8}}/>    
+        <Image source={require('./img/moments_btn_back.png')} style={{marginLeft: 8}}/>    
       </TouchableOpacity>
       ),
       headerStyle: {
