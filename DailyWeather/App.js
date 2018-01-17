@@ -17,7 +17,9 @@ import {
   VirtualizedList,
   TouchableOpacity
 } from 'react-native';
-import { StackNavigator, NavigationActions } from 'react-navigation';
+import { StackNavigator, NavigationActions, TabNavigator } from 'react-navigation';
+import Map from './Map';
+// import Ionicons from 'react-native-vector-icons/Ionicons';
 
 var screenWidth = Dimensions.get('window').width;
 var screenHeight = Dimensions.get('window').height;
@@ -411,17 +413,29 @@ const styles = StyleSheet.create({
   }
 });
 
+class MapTest extends Component < {} > {
+  render() {
+    return (
+      <View style={{backgroundColor: 'red'}}>
+        <Text >fasfsdfasdfasdfasdf</Text>
+      </View>
+
+    )
+  }
+}
+
 const StackCity = StackNavigator({
   City: {
       screen: CityScreen,
     },
-})
+});
 
 
-const StackApp = StackNavigator(
+const WeatherTab = StackNavigator(
   {
-    Home: {
+    Weather: {
       screen: HomeScreen,
+      path: '/',
     },
     City: {
       screen: StackCity,
@@ -431,10 +445,54 @@ const StackApp = StackNavigator(
     headerMode: 'none',
     mode: 'modal',
   },
-)
+);
+
+const MapTab = StackNavigator(
+  {
+    Map: {
+      screen: MapTest,
+      path: '/map',
+    }
+  }
+);
+
+const TabsApp = TabNavigator(
+  {
+    WeatherTab: {
+      screen: WeatherTab,
+      // path: '/',
+      navigationOptions: {
+        tabBarLabel: '天气',
+      },
+    },
+    MapTab: {
+      screen: MapTab,
+      // path: '/map',
+      navigationOptions: {
+        tabBarLabel: '地图1'
+      }
+    },
+    Map2Tab: {
+      screen: MapTab,
+      // path: '/map',
+      navigationOptions: {
+        tabBarLabel: '地图2'
+      }
+    },
+  },
+  // {
+  //   tabBarPosition: 'bottom',
+  //   animationEnabled: false,
+  //   swipeEnabled: false,
+  //   tabBarOptions: {
+  //     activeTintColor: Platform.OS === 'ios' ? '#e91e63' : '#fff',
+  //   },
+  // }
+);
+
 
 export default class App extends React.Component {
   render() {
-    return <StackApp />
+    return <TabsApp />
   }
 }
