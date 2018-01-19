@@ -4,8 +4,9 @@ import MapScreen from './Map';
 import CityScreen from './City';
 import GrowListScreen from './GrowList';
 import WeatherScreen from './Weather';
+import LargeListSample from './LargeListSample';
 
-if (__DEV__) { // 正式环境console不打印
+if (!__DEV__) { // 正式环境console不打印
   global.console = {
     info: () => {},
     log: () => {},
@@ -79,7 +80,12 @@ const TabsApp = TabNavigator(
         tabBarLabel: '地图'
       }
     },
-    
+    Large: {
+      screen: LargeListSample,
+      navigationOptions: {
+        tabBarLabel: 'LargeListSample'
+      }
+    }
   },
 );
 
